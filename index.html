@@ -1,0 +1,62 @@
+<!-- ./client/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+       
+       $('#content').load("chat.html");
+    
+    });
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+      <div id="content"></div>
+    <!-- <button onClick="sendMsg()">Hit Me</button> -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script>
+
+      const socket = io("http://localhost:3000");
+
+socket.on('error', function (err) {
+  console.log('received socket error:')
+  console.log(err)
+})
+
+function register(name, cb) {
+  socket.emit('register', name, cb)
+}
+
+function join(chatroomName, cb) {
+  socket.emit('subscribe', chatroomName, cb)
+}
+
+function leave(chatroomName, cb) {
+  socket.emit('unsubscribe', chatroomName, cb)
+}
+
+function message(chatroomName, msg, cb) {
+  socket.emit('message', { chatroomName, message: msg }, cb)
+}
+
+function getAvailableUsers(cb) {
+  socket.emit('availableUsers', null, cb)
+}
+
+function sendMsg() {
+  socket.emit("message", "HELLO WORLD");
+}
+      // listen for new messages
+  socket.on("message", function(data) {
+    console.log(data);
+  });
+    </script>
+  </body>
+</html>
